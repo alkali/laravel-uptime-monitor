@@ -7,6 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Messages\SlackAttachment;
 use NotificationChannels\Telegram\TelegramMessage;
+use Spatie\UptimeMonitor\Helpers\Emoji;
 use Spatie\UptimeMonitor\Notifications\BaseNotification;
 use Spatie\UptimeMonitor\Events\CertificateCheckFailed as InValidCertificateFoundEvent;
 
@@ -55,7 +56,7 @@ class CertificateCheckFailed extends BaseNotification
     public function toTelegram($notifiable)
     {
         return (new TelegramMessage())
-            ->content(":exclamation: *{$this->getMessageText()}*
+            ->content("\u{2757} *{$this->getMessageText()}*
             {$this->getMonitor()->certificate_check_failure_reason}");
     }
 

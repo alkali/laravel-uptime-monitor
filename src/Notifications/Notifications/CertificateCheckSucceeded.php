@@ -50,7 +50,7 @@ class CertificateCheckSucceeded extends BaseNotification
     public function toTelegram($notifiable)
     {
         return (new TelegramMessage())
-            ->content(":white_check_mark: *{$this->getMessageText()}*
+            ->content("\u{2705} *{$this->getMessageText()}*
             Expires {$this->getMonitor()->formattedCertificateExpirationDate('forHumans')}");
     }
 
