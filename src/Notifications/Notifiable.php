@@ -24,6 +24,14 @@ class Notifiable
         return config('laravel-uptime-monitor.notifications.slack.webhook_url');
     }
 
+    /**
+     * @return int|null
+     */
+    public function routeNotificationForTelegram()
+    {
+        return config('laravel-uptime-monitor.notifications.telegram.to');
+    }
+
     public function getKey(): string
     {
         return static::class;
