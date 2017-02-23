@@ -6,11 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Messages\SlackAttachment;
+use NotificationChannels\Telegram\TelegramMessage;
 use Spatie\UptimeMonitor\Notifications\BaseNotification;
 use Spatie\UptimeMonitor\Events\CertificateCheckFailed as InValidCertificateFoundEvent;
 
 class CertificateCheckFailed extends BaseNotification
 {
+
     /** @var \Spatie\UptimeMonitor\Events\CertificateCheckSucceeded */
     public $event;
 
@@ -27,8 +29,9 @@ class CertificateCheckFailed extends BaseNotification
             ->subject($this->getMessageText())
             ->line($this->getMessageText());
 
-        foreach ($this->getMonitorProperties() as $name => $value) {
-            $mailMessage->line($name.': '.$value);
+        foreach ($this->getMonitorProperties() as $name => $value)
+        {
+            $mailMessage->line($name . ': ' . $value);
         }
 
         return $mailMessage;
@@ -38,7 +41,8 @@ class CertificateCheckFailed extends BaseNotification
     {
         return (new SlackMessage)
             ->error()
-            ->attachment(function (SlackAttachment $attachment) {
+            ->attachment(function (SlackAttachment $attachment)
+            {
                 $attachment
                     ->title($this->getMessageText())
                     ->content($this->getMonitor()->certificate_check_failure_reason)
@@ -46,6 +50,13 @@ class CertificateCheckFailed extends BaseNotification
                     ->footer($this->getMonitor()->certificate_issuer)
                     ->timestamp(Carbon::now());
             });
+    }
+
+    public function toTelegram($notifiable)
+    {
+        return (new TelegramMessage())
+            ->content(":exclamation: *{$this->getMessageText()}*
+            {$this->getMonitor()->certificate_check_failure_reason}");
     }
 
     public function getMonitorProperties($properties = []): array

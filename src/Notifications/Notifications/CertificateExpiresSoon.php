@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Messages\SlackAttachment;
+use NotificationChannels\Telegram\TelegramMessage;
 use Spatie\UptimeMonitor\Notifications\BaseNotification;
 use Spatie\UptimeMonitor\Events\CertificateExpiresSoon as SoonExpiringSslCertificateFoundEvent;
 
@@ -46,6 +47,13 @@ class CertificateExpiresSoon extends BaseNotification
                     ->footer($this->getMonitor()->certificate_issuer)
                     ->timestamp(Carbon::now());
             });
+    }
+
+    public function toTelegram($notifiable)
+    {
+        return (new TelegramMessage())
+            ->content(":warning: *{$this->getMessageText()}*
+            Expires {$this->getMonitor()->formattedCertificateExpirationDate('forHumans')}");
     }
 
     public function setEvent(SoonExpiringSslCertificateFoundEvent $event)

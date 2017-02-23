@@ -5,6 +5,7 @@ namespace Spatie\UptimeMonitor\Notifications\Notifications;
 use Carbon\Carbon;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
+use NotificationChannels\Telegram\TelegramMessage;
 use Spatie\UptimeMonitor\Models\Enums\UptimeStatus;
 use Illuminate\Notifications\Messages\SlackAttachment;
 use Spatie\UptimeMonitor\Notifications\BaseNotification;
@@ -47,6 +48,13 @@ class UptimeCheckFailed extends BaseNotification
                     ->footer($this->getLocationDescription())
                     ->timestamp(Carbon::now());
             });
+    }
+
+    public function toTelegram($notifiable)
+    {
+        return (new TelegramMessage())
+            ->content(":exclamation: *{$this->getMessageText()}*
+            {$this->getMonitor()->uptime_check_failure_reason}");
     }
 
     public function getMonitorProperties($extraProperties = []): array

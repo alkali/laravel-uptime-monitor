@@ -5,6 +5,7 @@ namespace Spatie\UptimeMonitor\Notifications\Notifications;
 use Carbon\Carbon;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
+use NotificationChannels\Telegram\TelegramMessage;
 use Spatie\UptimeMonitor\Models\Enums\UptimeStatus;
 use Illuminate\Notifications\Messages\SlackAttachment;
 use Spatie\UptimeMonitor\Notifications\BaseNotification;
@@ -12,6 +13,7 @@ use Spatie\UptimeMonitor\Events\UptimeCheckSucceeded as MonitorSucceededEvent;
 
 class UptimeCheckSucceeded extends BaseNotification
 {
+
     /** @var \Spatie\UptimeMonitor\Events\UptimeCheckSucceeded */
     public $event;
 
@@ -27,8 +29,9 @@ class UptimeCheckSucceeded extends BaseNotification
             ->subject($this->getMessageText())
             ->line($this->getMessageText());
 
-        foreach ($this->getMonitorProperties() as $name => $value) {
-            $mailMessage->line($name.': '.$value);
+        foreach ($this->getMonitorProperties() as $name => $value)
+        {
+            $mailMessage->line($name . ': ' . $value);
         }
 
         return $mailMessage;
@@ -37,13 +40,20 @@ class UptimeCheckSucceeded extends BaseNotification
     public function toSlack($notifiable)
     {
         return (new SlackMessage)
-            ->attachment(function (SlackAttachment $attachment) {
+            ->attachment(function (SlackAttachment $attachment)
+            {
                 $attachment
                     ->title($this->getMessageText())
                     ->fallback($this->getMessageText())
                     ->footer($this->getLocationDescription())
                     ->timestamp(Carbon::now());
             });
+    }
+
+    public function toTelegram($notifiable)
+    {
+        return (new TelegramMessage())
+            ->content(":white_check_mark: *{$this->getMessageText()}*");
     }
 
     public function isStillRelevant(): bool
