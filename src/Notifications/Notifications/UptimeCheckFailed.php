@@ -53,8 +53,7 @@ class UptimeCheckFailed extends BaseNotification
     public function toTelegram($notifiable)
     {
         return (new TelegramMessage())
-            ->content("\u{2757} *{$this->getMessageText()}*
-            {$this->getMonitor()->uptime_check_failure_reason}");
+            ->content("\u{2757} *{$this->getMessageText()}*\n{$this->getMonitor()->uptime_check_failure_reason}");
     }
 
     public function getMonitorProperties($extraProperties = []): array

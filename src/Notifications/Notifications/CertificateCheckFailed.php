@@ -56,8 +56,7 @@ class CertificateCheckFailed extends BaseNotification
     public function toTelegram($notifiable)
     {
         return (new TelegramMessage())
-            ->content("\u{2757} *{$this->getMessageText()}*
-            {$this->getMonitor()->certificate_check_failure_reason}");
+            ->content("\u{2757} *{$this->getMessageText()}*\n{$this->getMonitor()->certificate_check_failure_reason}");
     }
 
     public function getMonitorProperties($properties = []): array

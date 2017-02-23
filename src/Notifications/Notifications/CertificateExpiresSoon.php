@@ -52,8 +52,7 @@ class CertificateExpiresSoon extends BaseNotification
     public function toTelegram($notifiable)
     {
         return (new TelegramMessage())
-            ->content("\u{26A0} *{$this->getMessageText()}*
-            Expires {$this->getMonitor()->formattedCertificateExpirationDate('forHumans')}");
+            ->content("\u{26A0} *{$this->getMessageText()}*\nExpires {$this->getMonitor()->formattedCertificateExpirationDate('forHumans')}");
     }
 
     public function setEvent(SoonExpiringSslCertificateFoundEvent $event)
